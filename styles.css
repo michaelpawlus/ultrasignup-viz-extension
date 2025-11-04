@@ -1,0 +1,46 @@
+/* UltraSignup Race Visualizer - Styles */
+
+/* Container for the chart */
+.ultrasignup-viz-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+/* Canvas element styling */
+#us-viz-chart {
+  max-width: 100%;
+  height: auto !important;
+  min-height: 300px;
+}
+
+/* Ensure the chart container is responsive */
+@media (max-width: 768px) {
+  .ultrasignup-viz-container {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  #us-viz-chart {
+    min-height: 250px;
+  }
+}
+
+/* Loading state (optional for future enhancement) */
+.ultrasignup-viz-container.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ultrasignup-viz-container.loading::after {
+  content: "Loading chart...";
+  display: block;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
