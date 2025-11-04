@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "UltraSignup Race Visualizer",
+  "version": "1.0.0",
+  "description": "Adds visual charts to UltraSignup race results pages to show finish time distributions",
+  "permissions": [
+    "https://ultrasignup.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://ultrasignup.com/results_event.aspx*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%234CAF50' width='16' height='16' rx='3'/><path fill='white' d='M3 12h2V8H3v4zm4 0h2V4H7v8zm4 0h2V6h-2v6z'/></svg>",
+    "48": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect fill='%234CAF50' width='48' height='48' rx='8'/><path fill='white' d='M10 36h6V24h-6v12zm12 0h6V12h-6v24zm12 0h6V18h-6v18z'/></svg>",
+    "128": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><rect fill='%234CAF50' width='128' height='128' rx='20'/><path fill='white' d='M26 96h16V64H26v32zm32 0h16V32H58v64zm32 0h16V48H90v48z'/></svg>"
+  }
+}
+
