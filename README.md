@@ -52,21 +52,53 @@ Make sure you have all these files in a folder:
 
 ### Technical Overview
 
-The extension uses three main components:
+The extension uses several components working together:
 
-1. **manifest.json** - Configuration file that tells Chrome:
-   - What permissions the extension needs
-   - Which pages to run on
-   - What files to inject
+**Core Files:**
+1. **manifest.json** - Chrome extension configuration
+   - Defines permissions (storage, ultrasignup.com)
+   - Specifies content scripts and load order
+   - Sets up icons and metadata
 
-2. **content.js** - Main logic that:
-   - Extracts the race ID from the URL (`did` parameter)
-   - Fetches JSON data from UltraSignup's API endpoint
-   - Parses finish times (HH:MM:SS format)
-   - Creates histogram bins (30-minute intervals)
-   - Renders chart using Chart.js library
+2. **content.js** - Main extension logic
+   - Extracts race ID from URL
+   - Tries multiple API endpoints
+   - Falls back to HTML table scraping if APIs fail
+   - Creates histogram and renders chart
+   - Integrates debug mode
 
-3. **styles.css** - Styling to make the chart look clean and integrate with the existing page
+3. **styles.css** - Visual styling
+   - Chart container styles
+   - Error message styles
+   - Debug panel styles
+
+**Supporting Files:**
+4. **debugPanel.js** - Debug mode functionality
+   - Creates debug UI panel
+   - Collects and displays performance metrics
+   - Exports debug data
+
+5. **test-lib.js** - Extracted core functions
+   - Time conversion utilities
+   - Histogram generation
+   - Data filtering
+   - Reusable across test environments
+
+6. **scraper.js** - HTML scraping (integrated into content.js)
+   - Parses result tables
+   - Extracts finish times and race data
+   - Handles different table formats
+
+**Testing Files:**
+7. **test.html** - Interactive test page
+   - Standalone testing environment
+   - Sample data and controls
+   - Visual chart rendering
+
+8. **tests/** - Jest test suite
+   - Unit tests for all functions
+   - Edge case coverage
+   - Sample data fixtures
 
 ### Data Source
 
@@ -82,6 +114,65 @@ This returns all the data shown in the results table, including:
 - City/state
 - Race distance
 
+## Testing & Debugging
+
+### Standalone Test Page
+
+Open `test.html` in your browser to test the extension functions without installing it:
+
+1. Open `test.html` in any browser
+2. Click "Load Sample Data" to populate with test data
+3. Use the interactive controls to test:
+   - Time conversion functions
+   - Histogram generation with different bin sizes
+   - Distance filtering
+   - Edge cases and error handling
+4. Export test data as JSON for further analysis
+
+### Automated Tests
+
+Run the Jest test suite to verify all functions:
+
+```bash
+cd tests
+npm install
+npm test
+```
+
+Available test commands:
+- `npm test` - Run all tests once
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Generate coverage report
+
+Test files:
+- `time-conversion.test.js` - Tests time parsing and formatting
+- `histogram.test.js` - Tests histogram generation
+- `data-filtering.test.js` - Tests distance filtering
+
+### Debug Mode
+
+Enable debug mode to see detailed information about data fetching and processing:
+
+**Enable via Console:**
+1. Open browser console (F12) on any UltraSignup results page
+2. Run: `UltraSignupDebug.enable()`
+3. Reload the page
+4. A debug panel will appear above the chart
+
+**Debug Panel Features:**
+- Data source (API or HTML scraping)
+- Data statistics (total/filtered results)
+- Performance timings
+- Sample data inspection
+- Error messages
+- Export debug data as JSON
+
+**Console Commands:**
+- `UltraSignupDebug.enable()` - Enable debug mode
+- `UltraSignupDebug.disable()` - Disable debug mode
+- `UltraSignupDebug.toggle()` - Toggle debug mode
+- `UltraSignupDebug.status()` - Check if debug mode is enabled
+
 ## Troubleshooting
 
 ### Chart doesn't appear
@@ -89,14 +180,17 @@ This returns all the data shown in the results table, including:
 **Check the browser console:**
 1. Right-click on the page → "Inspect" → "Console" tab
 2. Look for messages starting with "UltraSignup Visualizer:"
-3. Common issues:
+3. Enable debug mode: `UltraSignupDebug.enable()` and reload
+4. Common issues:
    - "No race ID found in URL" - Make sure you're on a `results_event.aspx` page
-   - API errors - The race may not have results yet, or the API might be down
+   - API errors - Extension now falls back to HTML scraping automatically
+   - No table data - The race may not have results yet
 
 ### Chart shows wrong data
 
 - If the race has multiple distances, make sure you're on the correct tab
 - The extension filters by the active tab (e.g., "100 Miler", "50K")
+- Enable debug mode to see filtered vs. total result counts
 
 ### Extension not loading
 
@@ -104,6 +198,19 @@ This returns all the data shown in the results table, including:
 2. Check if "UltraSignup Race Visualizer" is enabled
 3. Try clicking the refresh icon on the extension card
 4. If errors appear, check that all files are in the folder
+5. Check console for error messages
+
+### Data Fetching Issues
+
+The extension now uses a fallback strategy:
+1. **First attempt**: Try multiple API endpoints
+2. **Fallback**: Scrape data from HTML table
+3. **Result**: You'll see which method worked in the console
+
+Enable debug mode to see:
+- Which API endpoints were tried
+- Whether HTML scraping was used
+- Sample of the data that was collected
 
 ## Future Enhancements
 

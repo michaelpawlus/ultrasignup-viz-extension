@@ -4,12 +4,15 @@
   "version": "1.0.0",
   "description": "Adds visual charts to UltraSignup race results pages to show finish time distributions",
   "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
     "https://ultrasignup.com/*"
   ],
   "content_scripts": [
     {
       "matches": ["https://ultrasignup.com/results_event.aspx*"],
-      "js": ["chart.min.js", "content.js"],
+      "js": ["chart.min.js", "debugPanel.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }
