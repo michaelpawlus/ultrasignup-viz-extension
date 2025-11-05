@@ -107,7 +107,14 @@
   function scrapeTableData() {
     console.log('Attempting to scrape data from HTML table...');
     
-    // Find the results table - try multiple selectors
+    // First, try jqGrid table (UltraSignup uses this format)
+    const jqGridTable = document.querySelector('table#list.ui-jqgrid-btable, table.ui-jqgrid-btable');
+    if (jqGridTable) {
+      console.log('Detected jqGrid table, using jqGrid scraper...');
+      return scrapeJqGridTable(jqGridTable);
+    }
+    
+    // Fall back to traditional table scraping
     const table = document.querySelector('table.ultra-table') || 
                   document.querySelector('table[id*="result"]') ||
                   document.querySelector('table[class*="result"]') ||
@@ -117,6 +124,77 @@
       console.error('Could not find results table');
       return [];
     }
+    
+    console.log('Using traditional table scraper...');
+    return scrapeTraditionalTable(table);
+  }
+  
+  /**
+   * Scrape jqGrid-style tables (used by UltraSignup)
+   * @param {HTMLElement} table - The jqGrid table element
+   * @returns {Array} - Array of race result objects
+   */
+  function scrapeJqGridTable(table) {
+    const results = [];
+    const activeDistance = getActiveDistance();
+    
+    // jqGrid tables use aria-describedby to identify columns
+    // Find all data rows (skip header row and group rows)
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+    for (const row of rows) {
+      // Skip header rows, group headers, and rows without proper structure
+      if (row.classList.contains('jqgfirstrow') || 
+          row.classList.contains('jqgroup') ||
+          row.id.includes('listghead')) {
+        continue;
+      }
+      
+      // Extract data using aria-describedby attributes
+      const placeCell = row.querySelector('td[aria-describedby$="_place"]');
+      const firstNameCell = row.querySelector('td[aria-describedby$="_firstname"]');
+      const lastNameCell = row.querySelector('td[aria-describedby$="_lastname"]');
+      const timeCell = row.querySelector('td[aria-describedby$="_formattime"]');
+      const genderCell = row.querySelector('td[aria-describedby$="_gender"]');
+      const ageCell = row.querySelector('td[aria-describedby$="_age"]');
+      const cityCell = row.querySelector('td[aria-describedby$="_city"]');
+      const stateCell = row.querySelector('td[aria-describedby$="_state"]');
+      
+      // Build result object
+      const firstName = firstNameCell?.textContent.trim() || '';
+      const lastName = lastNameCell?.textContent.trim() || '';
+      const time = timeCell?.textContent.trim() || '';
+      
+      // Skip rows without valid time data (DNF, DNS, etc.)
+      if (!time || !time.match(/\d+:\d+:\d+/)) {
+        continue;
+      }
+      
+      const result = {
+        Place: placeCell?.textContent.trim() || '',
+        Name: `${firstName} ${lastName}`.trim(),
+        Time: time,
+        Gender: genderCell?.textContent.trim() || '',
+        Age: ageCell?.textContent.trim() || '',
+        City: cityCell?.textContent.trim() || '',
+        State: stateCell?.textContent.trim() || '',
+        Race: activeDistance || '100 Mile' // Default or from active tab
+      };
+      
+      results.push(result);
+    }
+    
+    console.log(`jqGrid scraper found ${results.length} valid results`);
+    return results;
+  }
+  
+  /**
+   * Scrape traditional HTML tables
+   * @param {HTMLElement} table - The table element
+   * @returns {Array} - Array of race result objects
+   */
+  function scrapeTraditionalTable(table) {
+    const results = [];
     
     // Find the header row to identify column positions
     const headerRow = table.querySelector('thead tr, tr:first-child');
@@ -145,8 +223,6 @@
     // Extract data rows (skip header row)
     const rows = Array.from(table.querySelectorAll('tbody tr, tr')).slice(1);
     
-    const results = [];
-    
     for (const row of rows) {
       const cells = Array.from(row.querySelectorAll('td, th'));
       
@@ -171,6 +247,7 @@
       }
     }
     
+    console.log(`Traditional scraper found ${results.length} valid results`);
     return results;
   }
   

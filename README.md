@@ -85,9 +85,10 @@ The extension uses several components working together:
    - Reusable across test environments
 
 6. **scraper.js** - HTML scraping (integrated into content.js)
-   - Parses result tables
+   - Parses result tables from multiple formats
+   - Primary: jqGrid tables (UltraSignup's current format)
+   - Fallback: Traditional HTML tables
    - Extracts finish times and race data
-   - Handles different table formats
 
 **Testing Files:**
 7. **test.html** - Interactive test page
@@ -102,14 +103,33 @@ The extension uses several components working together:
 
 ### Data Source
 
-UltraSignup provides a JSON API endpoint:
+The extension tries multiple data sources in order:
+
+**1. API Endpoints (Tried First)**
 ```
 https://ultrasignup.com/service/events.svc/results/{RACE_ID}/json
+https://ultrasignup.com/m/service/events.svc/results/{RACE_ID}/json
+https://ultrasignup.com/results/{RACE_ID}/json
 ```
 
-This returns all the data shown in the results table, including:
+**2. HTML Table Scraping (Fallback)**
+
+If all API endpoints fail, the extension automatically falls back to scraping the HTML table:
+
+- **jqGrid Tables** (UltraSignup's current format)
+  - Uses `aria-describedby` attributes to identify columns
+  - Handles first/last name split columns
+  - Filters out DNF/DNS rows
+  - Selector: `table#list.ui-jqgrid-btable`
+
+- **Traditional HTML Tables** (Legacy support)
+  - Parses `<thead>` to identify column positions
+  - Matches column headers flexibly (e.g., "Time", "Finish Time", "Gun Time")
+  - Selectors: `.ultra-table`, `[id*="result"]`, `[class*="result"]`
+
+Both methods extract:
 - Runner name, age, gender
-- Finish time (HH:MM:SS)
+- Finish time (HH:MM:SS format)
 - Rank and place
 - City/state
 - Race distance
