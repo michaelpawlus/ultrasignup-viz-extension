@@ -16,26 +16,9 @@
   
   console.log(`UltraSignup Visualizer: Found race ID ${raceId}`);
   
-  // ===== STEP 2: Load Chart.js library =====
-  // We load Chart.js dynamically from a CDN (Content Delivery Network)
-  function loadChartJS() {
-    return new Promise((resolve, reject) => {
-      // Check if Chart.js is already loaded
-      if (window.Chart) {
-        resolve();
-        return;
-      }
-      
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
-  
-  // ===== STEP 3: Convert time strings to seconds =====
+  // ===== STEP 2: Convert time strings to seconds =====
   // Race times come in format "HH:MM:SS" (e.g., "16:50:30" or "26:45:12")
+  // Note: Chart.js is automatically loaded by manifest.json before this script runs
   function timeToSeconds(timeStr) {
     if (!timeStr || timeStr.trim() === '') return null;
     
@@ -51,14 +34,14 @@
     return hours * 3600 + minutes * 60 + seconds;
   }
   
-  // ===== STEP 4: Convert seconds back to readable format =====
+  // ===== STEP 3: Convert seconds back to readable format =====
   function secondsToTime(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}:${minutes.toString().padStart(2, '0')}`;
   }
   
-  // ===== STEP 5: Detect which distance tab is currently active =====
+  // ===== STEP 4: Detect which distance tab is currently active =====
   // UltraSignup shows different distances (100M, 100K, 50K) in tabs
   function getActiveDistance() {
     // Look for the active tab in the distance selector
@@ -71,7 +54,7 @@
     return null;
   }
   
-  // ===== STEP 6: Fetch race results from UltraSignup's JSON API =====
+  // ===== STEP 5: Fetch race results from UltraSignup's JSON API =====
   async function fetchRaceResults() {
     const apiUrl = `https://ultrasignup.com/service/events.svc/results/${raceId}/json`;
     console.log(`Fetching data from: ${apiUrl}`);
@@ -94,7 +77,7 @@
     }
   }
   
-  // ===== STEP 7: Filter results by active distance =====
+  // ===== STEP 6: Filter results by active distance =====
   function filterByDistance(results, activeDistance) {
     if (!activeDistance) return results;
     
@@ -108,7 +91,7 @@
     return filtered.length > 0 ? filtered : results;
   }
   
-  // ===== STEP 8: Create histogram data =====
+  // ===== STEP 7: Create histogram data =====
   // Group finish times into bins (e.g., every 30 minutes)
   function createHistogramData(results, binSizeMinutes = 30) {
     // Extract and convert all valid finish times to seconds
@@ -142,7 +125,7 @@
     return { labels: bins, data: binCounts };
   }
   
-  // ===== STEP 9: Create and inject the chart container =====
+  // ===== STEP 8: Create and inject the chart container =====
   function createChartContainer() {
     // Check if we already added a chart
     if (document.getElementById('us-viz-container')) {
@@ -172,7 +155,7 @@
     return container;
   }
   
-  // ===== STEP 10: Render the histogram using Chart.js =====
+  // ===== STEP 9: Render the histogram using Chart.js =====
   function renderHistogram(histogramData, raceName) {
     const canvas = document.getElementById('us-viz-chart');
     if (!canvas) {
@@ -255,9 +238,7 @@
     try {
       console.log('UltraSignup Visualizer: Starting...');
       
-      // Load Chart.js library
-      await loadChartJS();
-      console.log('Chart.js loaded');
+      // Chart.js is automatically loaded by the manifest
       
       // Fetch race results
       const results = await fetchRaceResults();
