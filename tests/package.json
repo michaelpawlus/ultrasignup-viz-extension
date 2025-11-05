@@ -1,0 +1,29 @@
+{
+  "name": "ultrasignup-visualizer-tests",
+  "version": "1.0.0",
+  "description": "Test suite for UltraSignup Race Visualizer extension",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": ["testing", "jest", "ultrasignup"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "../test-lib.js"
+    ],
+    "coverageDirectory": "./coverage",
+    "verbose": true
+  }
+}
+
