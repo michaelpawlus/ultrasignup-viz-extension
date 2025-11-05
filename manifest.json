@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["https://ultrasignup.com/results_event.aspx*"],
-      "js": ["content.js"],
+      "js": ["chart.min.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }
