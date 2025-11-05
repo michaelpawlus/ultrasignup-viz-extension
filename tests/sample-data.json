@@ -1,0 +1,103 @@
+[
+  {
+    "Place": "1",
+    "Name": "John Smith",
+    "Time": "16:45:30",
+    "Gender": "M",
+    "Age": "35",
+    "City": "Boulder",
+    "State": "CO",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "2",
+    "Name": "Jane Doe",
+    "Time": "17:23:45",
+    "Gender": "F",
+    "Age": "28",
+    "City": "Seattle",
+    "State": "WA",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "3",
+    "Name": "Bob Johnson",
+    "Time": "18:12:20",
+    "Gender": "M",
+    "Age": "42",
+    "City": "Portland",
+    "State": "OR",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "4",
+    "Name": "Alice Williams",
+    "Time": "19:05:15",
+    "Gender": "F",
+    "Age": "31",
+    "City": "Denver",
+    "State": "CO",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "5",
+    "Name": "Charlie Brown",
+    "Time": "20:30:00",
+    "Gender": "M",
+    "Age": "38",
+    "City": "Austin",
+    "State": "TX",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "6",
+    "Name": "Diana Prince",
+    "Time": "21:45:30",
+    "Gender": "F",
+    "Age": "29",
+    "City": "Phoenix",
+    "State": "AZ",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "7",
+    "Name": "Edward Norton",
+    "Time": "22:15:00",
+    "Gender": "M",
+    "Age": "45",
+    "City": "Chicago",
+    "State": "IL",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "8",
+    "Name": "Fiona Green",
+    "Time": "23:30:45",
+    "Gender": "F",
+    "Age": "33",
+    "City": "Boston",
+    "State": "MA",
+    "Race": "100 Mile"
+  },
+  {
+    "Place": "1",
+    "Name": "Gary Anderson",
+    "Time": "08:45:30",
+    "Gender": "M",
+    "Age": "27",
+    "City": "Portland",
+    "State": "OR",
+    "Race": "50K"
+  },
+  {
+    "Place": "2",
+    "Name": "Helen White",
+    "Time": "09:12:15",
+    "Gender": "F",
+    "Age": "25",
+    "City": "Seattle",
+    "State": "WA",
+    "Race": "50K"
+  }
+]
+

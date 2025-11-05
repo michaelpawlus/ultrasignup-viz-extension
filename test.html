@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UltraSignup Visualizer - Test Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="test-lib.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background-color: #fafafa;
+    }
+    
+    h2 {
+      color: #444;
+      margin-bottom: 15px;
+      font-size: 20px;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 5px;
+    }
+    
+    .test-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    button.secondary {
+      background-color: #2196F3;
+    }
+    
+    button.secondary:hover {
+      background-color: #0b7dda;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    
+    .output {
+      background-color: white;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 10px;
+      min-height: 50px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .output.success {
+      border-color: #4CAF50;
+      background-color: #f1f8f4;
+    }
+    
+    .output.error {
+      border-color: #f44336;
+      background-color: #fef1f1;
+      color: #c62828;
+    }
+    
+    .input-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #555;
+    }
+    
+    input[type="text"], input[type="number"] {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 200px;
+    }
+    
+    #chartContainer {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    #testChart {
+      max-height: 400px;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat-card {
+      background-color: white;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 UltraSignup Visualizer Test Suite</h1>
+    <p class="subtitle">Interactive testing and debugging tool for the UltraSignup Race Visualizer extension</p>
+    
+    <!-- Section 1: Time Conversion Tests -->
+    <div class="section">
+      <h2>1. Time Conversion Functions</h2>
+      <div class="input-group">
+        <label>Enter time string (HH:MM:SS):</label>
+        <input type="text" id="timeInput" value="16:45:30" placeholder="16:45:30">
+        <button onclick="testTimeConversion()">Convert to Seconds</button>
+        <button onclick="testReverseConversion()" class="secondary">Convert Back</button>
+      </div>
+      <div id="timeOutput" class="output"></div>
+    </div>
+    
+    <!-- Section 2: Sample Data Testing -->
+    <div class="section">
+      <h2>2. Sample Race Data</h2>
+      <div class="test-controls">
+        <button onclick="loadSampleData()">Load Sample Data</button>
+        <button onclick="clearData()" class="secondary">Clear Data</button>
+      </div>
+      <div class="input-group">
+        <label>Race data (JSON array with Time field):</label>
+        <textarea id="sampleData"></textarea>
+      </div>
+      <div id="dataStats" class="stats"></div>
+    </div>
+    
+    <!-- Section 3: Histogram Generation -->
+    <div class="section">
+      <h2>3. Histogram Generation</h2>
+      <div class="input-group">
+        <label>Bin size (minutes):</label>
+        <input type="number" id="binSize" value="30" min="5" max="120">
+      </div>
+      <div class="test-controls">
+        <button onclick="generateHistogram()">Generate Histogram</button>
+        <button onclick="testDifferentBinSizes()" class="secondary">Test Different Bin Sizes</button>
+      </div>
+      <div id="histogramOutput" class="output"></div>
+    </div>
+    
+    <!-- Section 4: Chart Visualization -->
+    <div class="section">
+      <h2>4. Chart Visualization</h2>
+      <div class="test-controls">
+        <button onclick="renderChart()">Render Chart</button>
+        <button onclick="exportChartData()" class="secondary">Export Data</button>
+      </div>
+      <div id="chartContainer">
+        <canvas id="testChart"></canvas>
+      </div>
+    </div>
+    
+    <!-- Section 5: Distance Filtering -->
+    <div class="section">
+      <h2>5. Distance Filtering</h2>
+      <div class="input-group">
+        <label>Filter by distance:</label>
+        <input type="text" id="distanceFilter" value="100 Mile" placeholder="100 Mile">
+        <button onclick="testFiltering()">Apply Filter</button>
+      </div>
+      <div id="filterOutput" class="output"></div>
+    </div>
+    
+    <!-- Section 6: Edge Cases -->
+    <div class="section">
+      <h2>6. Edge Case Tests</h2>
+      <div class="test-controls">
+        <button onclick="testEdgeCases()">Run All Edge Cases</button>
+      </div>
+      <div id="edgeCaseOutput" class="output"></div>
+    </div>
+  </div>
+  
+  <script>
+    // Global state
+    let currentData = [];
+    let currentChart = null;
+    
+    // Sample data generator
+    function generateSampleRaceData() {
+      const sampleData = [];
+      const distances = ['100 Mile', '100K', '50 Mile'];
+      const names = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Williams', 'Charlie Brown'];
+      
+      // Generate 50 sample finishers with realistic times
+      for (let i = 0; i < 50; i++) {
+        const baseTime = 16 * 3600 + (Math.random() * 8 * 3600); // 16-24 hours
+        const hours = Math.floor(baseTime / 3600);
+        const minutes = Math.floor((baseTime % 3600) / 60);
+        const seconds = Math.floor(baseTime % 60);
+        
+        sampleData.push({
+          Place: i + 1,
+          Name: names[Math.floor(Math.random() * names.length)],
+          Time: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+          Gender: Math.random() > 0.5 ? 'M' : 'F',
+          Age: Math.floor(Math.random() * 40) + 20,
+          Race: distances[Math.floor(Math.random() * distances.length)]
+        });
+      }
+      
+      return sampleData;
+    }
+    
+    // Test time conversion
+    function testTimeConversion() {
+      const input = document.getElementById('timeInput').value;
+      const output = document.getElementById('timeOutput');
+      
+      try {
+        const seconds = window.UltraSignupLib.timeToSeconds(input);
+        if (seconds === null) {
+          output.className = 'output error';
+          output.textContent = `Invalid time format: "${input}"`;
+        } else {
+          output.className = 'output success';
+          output.textContent = `✓ "${input}" = ${seconds} seconds\n` +
+                              `  (${Math.floor(seconds / 3600)} hours, ${Math.floor((seconds % 3600) / 60)} minutes, ${seconds % 60} seconds)`;
+        }
+      } catch (error) {
+        output.className = 'output error';
+        output.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Test reverse conversion
+    function testReverseConversion() {
+      const input = document.getElementById('timeInput').value;
+      const output = document.getElementById('timeOutput');
+      
+      try {
+        const seconds = window.UltraSignupLib.timeToSeconds(input);
+        if (seconds === null) {
+          output.className = 'output error';
+          output.textContent = `Cannot convert invalid time: "${input}"`;
+          return;
+        }
+        
+        const timeStr = window.UltraSignupLib.secondsToTime(seconds);
+        output.className = 'output success';
+        output.textContent = `✓ ${seconds} seconds → "${timeStr}"\n` +
+                            `  Original: "${input}"`;
+      } catch (error) {
+        output.className = 'output error';
+        output.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Load sample data
+    function loadSampleData() {
+      currentData = generateSampleRaceData();
+      document.getElementById('sampleData').value = JSON.stringify(currentData, null, 2);
+      updateDataStats();
+    }
+    
+    // Clear data
+    function clearData() {
+      currentData = [];
+      document.getElementById('sampleData').value = '';
+      document.getElementById('dataStats').innerHTML = '';
+    }
+    
+    // Update data statistics
+    function updateDataStats() {
+      const statsDiv = document.getElementById('dataStats');
+      
+      if (currentData.length === 0) {
+        statsDiv.innerHTML = '';
+        return;
+      }
+      
+      const times = currentData.map(r => window.UltraSignupLib.timeToSeconds(r.Time)).filter(t => t !== null);
+      const minTime = Math.min(...times);
+      const maxTime = Math.max(...times);
+      const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+      
+      statsDiv.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${currentData.length}</div>
+          <div class="stat-label">Total Finishers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${window.UltraSignupLib.secondsToTime(minTime)}</div>
+          <div class="stat-label">Fastest Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${window.UltraSignupLib.secondsToTime(maxTime)}</div>
+          <div class="stat-label">Slowest Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${window.UltraSignupLib.secondsToTime(Math.floor(avgTime))}</div>
+          <div class="stat-label">Average Time</div>
+        </div>
+      `;
+    }
+    
+    // Generate histogram
+    function generateHistogram() {
+      const dataText = document.getElementById('sampleData').value;
+      const binSize = parseInt(document.getElementById('binSize').value);
+      const output = document.getElementById('histogramOutput');
+      
+      try {
+        const data = dataText ? JSON.parse(dataText) : currentData;
+        if (data.length === 0) {
+          output.className = 'output error';
+          output.textContent = 'No data available. Load sample data first.';
+          return;
+        }
+        
+        currentData = data;
+        const histogramData = window.UltraSignupLib.createHistogramData(data, binSize);
+        
+        output.className = 'output success';
+        output.textContent = `✓ Histogram generated with ${histogramData.labels.length} bins (${binSize} min each)\n\n` +
+                            histogramData.labels.map((label, i) => 
+                              `  ${label}: ${histogramData.data[i]} finishers`
+                            ).join('\n');
+      } catch (error) {
+        output.className = 'output error';
+        output.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Test different bin sizes
+    function testDifferentBinSizes() {
+      const dataText = document.getElementById('sampleData').value;
+      const output = document.getElementById('histogramOutput');
+      
+      try {
+        const data = dataText ? JSON.parse(dataText) : currentData;
+        if (data.length === 0) {
+          output.className = 'output error';
+          output.textContent = 'No data available. Load sample data first.';
+          return;
+        }
+        
+        const binSizes = [15, 30, 60, 120];
+        let result = '✓ Testing different bin sizes:\n\n';
+        
+        binSizes.forEach(binSize => {
+          const histogramData = window.UltraSignupLib.createHistogramData(data, binSize);
+          result += `  ${binSize} minutes: ${histogramData.labels.length} bins\n`;
+        });
+        
+        output.className = 'output success';
+        output.textContent = result;
+      } catch (error) {
+        output.className = 'output error';
+        output.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Render chart
+    function renderChart() {
+      const dataText = document.getElementById('sampleData').value;
+      const binSize = parseInt(document.getElementById('binSize').value);
+      
+      try {
+        const data = dataText ? JSON.parse(dataText) : currentData;
+        if (data.length === 0) {
+          alert('No data available. Load sample data first.');
+          return;
+        }
+        
+        currentData = data;
+        const histogramData = window.UltraSignupLib.createHistogramData(data, binSize);
+        
+        // Destroy existing chart
+        if (currentChart) {
+          currentChart.destroy();
+        }
+        
+        // Create new chart
+        const ctx = document.getElementById('testChart').getContext('2d');
+        currentChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: histogramData.labels,
+            datasets: [{
+              label: 'Number of Finishers',
+              data: histogramData.data,
+              backgroundColor: 'rgba(76, 175, 80, 0.6)',
+              borderColor: 'rgba(76, 175, 80, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              title: {
+                display: true,
+                text: `Finish Time Distribution (${binSize} min bins)`,
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                }
+              },
+              legend: {
+                display: true
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'Finish Time (HH:MM)'
+                },
+                ticks: {
+                  maxRotation: 45,
+                  minRotation: 45
+                }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Number of Finishers'
+                },
+                beginAtZero: true,
+                ticks: {
+                  precision: 0
+                }
+              }
+            }
+          }
+        });
+        
+        alert('Chart rendered successfully!');
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    }
+    
+    // Export chart data
+    function exportChartData() {
+      if (currentData.length === 0) {
+        alert('No data to export. Load sample data first.');
+        return;
+      }
+      
+      const binSize = parseInt(document.getElementById('binSize').value);
+      const histogramData = window.UltraSignupLib.createHistogramData(currentData, binSize);
+      
+      const exportData = {
+        totalFinishers: currentData.length,
+        binSize: binSize,
+        bins: histogramData.labels.map((label, i) => ({
+          timeRange: label,
+          count: histogramData.data[i]
+        })),
+        rawData: currentData
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ultrasignup-test-data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    
+    // Test filtering
+    function testFiltering() {
+      const dataText = document.getElementById('sampleData').value;
+      const distance = document.getElementById('distanceFilter').value;
+      const output = document.getElementById('filterOutput');
+      
+      try {
+        const data = dataText ? JSON.parse(dataText) : currentData;
+        if (data.length === 0) {
+          output.className = 'output error';
+          output.textContent = 'No data available. Load sample data first.';
+          return;
+        }
+        
+        const filtered = window.UltraSignupLib.filterByDistance(data, distance);
+        
+        output.className = 'output success';
+        output.textContent = `✓ Filtered by distance: "${distance}"\n` +
+                            `  Original count: ${data.length}\n` +
+                            `  Filtered count: ${filtered.length}\n\n` +
+                            `Sample results:\n` +
+                            filtered.slice(0, 5).map(r => 
+                              `  ${r.Name} - ${r.Time} (${r.Race})`
+                            ).join('\n');
+      } catch (error) {
+        output.className = 'output error';
+        output.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Test edge cases
+    function testEdgeCases() {
+      const output = document.getElementById('edgeCaseOutput');
+      const results = [];
+      
+      // Test 1: Invalid time formats
+      const invalidTimes = ['', '25:00:00', 'invalid', '12:60:00', '12:00', '12:00:00:00'];
+      results.push('Test 1: Invalid Time Formats');
+      invalidTimes.forEach(time => {
+        const result = window.UltraSignupLib.timeToSeconds(time);
+        results.push(`  "${time}" → ${result === null ? 'null (correct)' : 'ERROR: should be null'}`);
+      });
+      
+      // Test 2: Edge time values
+      results.push('\nTest 2: Edge Time Values');
+      const edgeTimes = ['00:00:00', '99:59:59', '24:00:00'];
+      edgeTimes.forEach(time => {
+        const seconds = window.UltraSignupLib.timeToSeconds(time);
+        const converted = seconds !== null ? window.UltraSignupLib.secondsToTime(seconds) : 'null';
+        results.push(`  "${time}" → ${seconds} seconds → "${converted}"`);
+      });
+      
+      // Test 3: Empty/malformed data
+      results.push('\nTest 3: Empty/Malformed Data');
+      const emptyHist = window.UltraSignupLib.createHistogramData([], 30);
+      results.push(`  Empty array → ${emptyHist.labels.length} bins (should be 0)`);
+      
+      const invalidData = [{Time: 'invalid'}, {Time: ''}, {Time: '16:30:00'}];
+      const partialHist = window.UltraSignupLib.createHistogramData(invalidData, 30);
+      results.push(`  3 results (2 invalid) → ${partialHist.labels.length} bins`);
+      
+      // Test 4: Single finisher
+      results.push('\nTest 4: Single Finisher');
+      const singleData = [{Time: '16:30:00'}];
+      const singleHist = window.UltraSignupLib.createHistogramData(singleData, 30);
+      results.push(`  1 finisher → ${singleHist.labels.length} bins: ${singleHist.labels[0]}`);
+      
+      output.className = 'output success';
+      output.textContent = '✓ All edge case tests completed:\n\n' + results.join('\n');
+    }
+  </script>
+</body>
+</html>
+
