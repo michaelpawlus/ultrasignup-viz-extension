@@ -6,8 +6,74 @@
 </head>
 <body>
   <!-- Sample table structure mimicking UltraSignup results page -->
+  
+  <!-- jqGrid Table Example (UltraSignup's actual format) -->
+  <div id="jqgrid-example">
+    <h1>Wolverine State 100 Mile Results (jqGrid Format)</h1>
+    <table id="list" class="ui-jqgrid-btable" role="grid">
+      <tbody>
+        <tr class="jqgfirstrow" role="row">
+          <td role="gridcell"></td>
+        </tr>
+        <tr role="row" id="1">
+          <td role="gridcell" aria-describedby="list_place">1</td>
+          <td role="gridcell" aria-describedby="list_firstname">John</td>
+          <td role="gridcell" aria-describedby="list_lastname">Smith</td>
+          <td role="gridcell" aria-describedby="list_gender">M</td>
+          <td role="gridcell" aria-describedby="list_age">35</td>
+          <td role="gridcell" aria-describedby="list_city">Boulder</td>
+          <td role="gridcell" aria-describedby="list_state">CO</td>
+          <td role="gridcell" aria-describedby="list_formattime">16:45:30</td>
+        </tr>
+        <tr role="row" id="2">
+          <td role="gridcell" aria-describedby="list_place">2</td>
+          <td role="gridcell" aria-describedby="list_firstname">Jane</td>
+          <td role="gridcell" aria-describedby="list_lastname">Doe</td>
+          <td role="gridcell" aria-describedby="list_gender">F</td>
+          <td role="gridcell" aria-describedby="list_age">28</td>
+          <td role="gridcell" aria-describedby="list_city">Seattle</td>
+          <td role="gridcell" aria-describedby="list_state">WA</td>
+          <td role="gridcell" aria-describedby="list_formattime">17:23:45</td>
+        </tr>
+        <tr role="row" id="3">
+          <td role="gridcell" aria-describedby="list_place">3</td>
+          <td role="gridcell" aria-describedby="list_firstname">Bob</td>
+          <td role="gridcell" aria-describedby="list_lastname">Johnson</td>
+          <td role="gridcell" aria-describedby="list_gender">M</td>
+          <td role="gridcell" aria-describedby="list_age">42</td>
+          <td role="gridcell" aria-describedby="list_city">Portland</td>
+          <td role="gridcell" aria-describedby="list_state">OR</td>
+          <td role="gridcell" aria-describedby="list_formattime">18:12:20</td>
+        </tr>
+        <tr role="row" id="4">
+          <td role="gridcell" aria-describedby="list_place">4</td>
+          <td role="gridcell" aria-describedby="list_firstname">Alice</td>
+          <td role="gridcell" aria-describedby="list_lastname">Williams</td>
+          <td role="gridcell" aria-describedby="list_gender">F</td>
+          <td role="gridcell" aria-describedby="list_age">31</td>
+          <td role="gridcell" aria-describedby="list_city">Denver</td>
+          <td role="gridcell" aria-describedby="list_state">CO</td>
+          <td role="gridcell" aria-describedby="list_formattime">19:05:15</td>
+        </tr>
+        <tr role="row" id="5">
+          <td role="gridcell" aria-describedby="list_place">5</td>
+          <td role="gridcell" aria-describedby="list_firstname">Charlie</td>
+          <td role="gridcell" aria-describedby="list_lastname">Brown</td>
+          <td role="gridcell" aria-describedby="list_gender">M</td>
+          <td role="gridcell" aria-describedby="list_age">38</td>
+          <td role="gridcell" aria-describedby="list_city">Austin</td>
+          <td role="gridcell" aria-describedby="list_state">TX</td>
+          <td role="gridcell" aria-describedby="list_formattime">20:30:00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <hr style="margin: 40px 0;">
+  
+  <!-- Traditional Table Example -->
   <div class="container">
-    <h1>Wolverine State 100 Mile Results</h1>
+    <h1>Wolverine State 100 Mile Results (Traditional Format)</h1>
     
     <!-- Distance tabs (optional) -->
     <ul class="nav-tabs">
