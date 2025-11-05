@@ -93,11 +93,36 @@ ultrasignup_viz_extension/
 1. Enable debug mode: `UltraSignupDebug.enable()`
 2. Reload the page
 3. Check debug panel for:
-   - Which data source worked
+   - Which data source worked (API vs jqGrid vs Traditional)
    - Performance bottlenecks
    - Sample data structure
 4. Export debug data if needed
 5. Check console for detailed logs
+
+### Testing the jqGrid Scraper
+
+The extension now supports UltraSignup's jqGrid table format:
+
+**Test with sample data:**
+1. Open `tests/sample-table.html` in browser
+2. Open browser console (F12)
+3. Copy and paste scraper functions from `content.js`
+4. Run: `scrapeTableData()`
+5. Verify it extracts data from both jqGrid and traditional tables
+
+**Console output should show:**
+```
+Attempting to scrape data from HTML table...
+Detected jqGrid table, using jqGrid scraper...
+jqGrid scraper found 5 valid results
+```
+
+**What the jqGrid scraper does:**
+- Detects tables with `id="list"` and class `ui-jqgrid-btable`
+- Uses `aria-describedby` attributes to find columns
+- Combines `firstname` and `lastname` columns
+- Filters out rows without valid times (DNF, DNS)
+- Skips jqGrid header rows (`jqgfirstrow`, `jqgroup`)
 
 ## Console Commands Reference
 
@@ -160,9 +185,11 @@ Typical performance:
    ↓
 2. Extract Race ID from URL
    ↓
-3. Try API Endpoints
+3. Try API Endpoints (3 different URLs)
    ↓ (if all fail)
 4. Scrape HTML Table
+   ├─→ Try jqGrid format (aria-describedby)
+   └─→ Fall back to traditional table (thead parsing)
    ↓
 5. Filter by Active Distance
    ↓
