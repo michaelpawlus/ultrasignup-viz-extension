@@ -1,0 +1,10 @@
+name: Suggest an improvement
+description: Tell us what would help you understand your race results.
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to understand or do?
+      description: Describe the running question or task, and how the current view falls short.
+    validations:
+      required: true

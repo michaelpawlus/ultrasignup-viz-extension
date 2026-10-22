@@ -1,278 +1,81 @@
 # UltraSignup Race Visualizer
 
-A Chrome extension that automatically adds visual charts to UltraSignup race results pages, making it easier to understand finish time distributions at a glance.
+See where a runner's finish time sits in the field, directly on an UltraSignup
+results page. An independent community project, not affiliated with UltraSignup.
 
-## Features
+## First-release features
 
-- 📊 **Automatic Histogram** - Shows finish time distribution in 30-minute bins
-- 🎯 **Distance Detection** - Automatically detects and filters by active race distance (100M, 100K, 50K, etc.)
-- 🚀 **Zero Configuration** - Just install and visit any UltraSignup race results page
-- 📱 **Responsive** - Works on desktop and mobile browsers
+- One finish-time histogram with aligned intervals.
+- Select a runner to highlight their interval and see how many other finishers
+  they finished ahead of, with ties counted separately.
+- Finisher count and median elapsed time.
+- Follows UltraSignup's existing age and division filters.
+- Keyboard-accessible runner selector and a text table of distribution counts.
+- Local processing, no extra network requests, accounts, storage, or analytics.
+- A feedback link for bugs and feature requests.
 
-## Installation (Developer Mode)
+The chart covers the loaded group in the current distance. It excludes DNF,
+DNS, DQ, unofficial results, and invalid/zero finish times. A comparison is
+withheld when displayed group counts do not match the loaded table.
 
-Since this extension is in development, you'll need to load it manually in Chrome:
+## Install the release candidate in desktop Chrome
 
-### Step 1: Download the Extension Files
+1. Download/clone this repository, or unzip the release package into a folder.
+2. Open `chrome://extensions` in Chrome and enable **Developer mode**.
+3. Choose **Load unpacked**, then select the folder containing `manifest.json`.
+4. Open a public results page, for example:
+   https://ultrasignup.com/results_event.aspx?did=125818
+5. Find **Your finish, in context** above the results grid. Select a runner.
+6. Try UltraSignup's age and division filters; the chart should update.
 
-Make sure you have all these files in a folder:
-- `manifest.json`
-- `content.js`
-- `styles.css`
-- `README.md` (this file)
+After editing files, click **Reload** on the extension card and reload the race
+page. The extension runs automatically; there is no toolbar popup.
 
-### Step 2: Load in Chrome
+## Supported scope and limitations
 
-1. Open Google Chrome
-2. Navigate to `chrome://extensions/`
-3. **Enable "Developer mode"** by toggling the switch in the top-right corner
-4. Click the **"Load unpacked"** button
-5. Select the folder containing your extension files
-6. You should see "UltraSignup Race Visualizer" appear in your extensions list
+Version 1.0.2 targets desktop Chrome and individual, fixed-distance results on
+`https://ultrasignup.com/results_event.aspx`. It does not run on the mobile
+`m_results_event.aspx` page. Fixed-time/distance-scored events and team formats
+are not supported. Restricted, empty, or incomplete results display an explanatory
+state rather than an estimated field. Other browsers are not yet verified.
 
-### Step 3: Verify Installation
+Results belong to the current page and its selected group, not every participant
+in an event weekend. If UltraSignup changes its page structure, the extension may
+need an update. Please report missing charts or incorrect counts with a race URL.
 
-- Look for a green bar chart icon in your extensions toolbar
-- The extension should show as "Enabled"
+## Feedback
 
-## Usage
+[Report a bug or suggest a feature](https://github.com/michaelpawlus/ultrasignup-viz-extension/issues/new/choose).
+Include the extension version, race URL, filters, expected behavior, and what
+happened. Screenshots are optional; share only information you want public.
+GitHub feedback requires an account. There is no automatic diagnostics upload.
 
-1. Navigate to any UltraSignup race results page, for example:
-   - [Wolverine State 100 (2025)](https://ultrasignup.com/results_event.aspx?did=131438)
-   - Or search for any race on [UltraSignup.com](https://ultrasignup.com)
+Location filters and additional chart types are deferred until user feedback
+shows what would help most.
 
-2. The extension will automatically:
-   - Detect the race ID from the URL
-   - Fetch the race results
-   - Display a histogram above the results table
+## Development
 
-3. If the race has multiple distances (tabs), the chart will show data for the currently active tab.
-
-## How It Works
-
-### Technical Overview
-
-The extension uses several components working together:
-
-**Core Files:**
-1. **manifest.json** - Chrome extension configuration
-   - Defines permissions (storage, ultrasignup.com)
-   - Specifies content scripts and load order
-   - Sets up icons and metadata
-
-2. **content.js** - Main extension logic
-   - Extracts race ID from URL
-   - Tries multiple API endpoints
-   - Falls back to HTML table scraping if APIs fail
-   - Creates histogram and renders chart
-   - Integrates debug mode
-
-3. **styles.css** - Visual styling
-   - Chart container styles
-   - Error message styles
-   - Debug panel styles
-
-**Supporting Files:**
-4. **debugPanel.js** - Debug mode functionality
-   - Creates debug UI panel
-   - Collects and displays performance metrics
-   - Exports debug data
-
-5. **test-lib.js** - Extracted core functions
-   - Time conversion utilities
-   - Histogram generation
-   - Data filtering
-   - Reusable across test environments
-
-6. **scraper.js** - HTML scraping (integrated into content.js)
-   - Parses result tables from multiple formats
-   - Primary: jqGrid tables (UltraSignup's current format)
-   - Fallback: Traditional HTML tables
-   - Extracts finish times and race data
-
-**Testing Files:**
-7. **test.html** - Interactive test page
-   - Standalone testing environment
-   - Sample data and controls
-   - Visual chart rendering
-
-8. **tests/** - Jest test suite
-   - Unit tests for all functions
-   - Edge case coverage
-   - Sample data fixtures
-
-### Data Source
-
-The extension tries multiple data sources in order:
-
-**1. API Endpoints (Tried First)**
-```
-https://ultrasignup.com/service/events.svc/results/{RACE_ID}/json
-https://ultrasignup.com/m/service/events.svc/results/{RACE_ID}/json
-https://ultrasignup.com/results/{RACE_ID}/json
+```sh
+npm --prefix tests ci
+npm --prefix tests test -- --runInBand
+node scripts/capabilities.mjs --json
+node scripts/release.mjs --json
 ```
 
-**2. HTML Table Scraping (Fallback)**
+Node.js and the system `zip` command are needed to package a release. The release
+script validates files and creates an allowlisted ZIP in `dist/`; it does not
+publish. `manifest.json` is at the ZIP root. Load this same candidate in Chrome
+before uploading. See [TESTING_GUIDE.md](TESTING_GUIDE.md) and
+[PUBLISHING.md](PUBLISHING.md) for the remaining checks and store steps.
 
-If all API endpoints fail, the extension automatically falls back to scraping the HTML table:
+`core.js`, `scraper.js`, and `content.js` are the production source exercised by
+the tests. `test-lib.js` is a compatibility entry point for old Node tests;
+`test.html` is a developer sandbox, not a release artifact.
 
-- **jqGrid Tables** (UltraSignup's current format)
-  - Uses `aria-describedby` attributes to identify columns
-  - Handles first/last name split columns
-  - Filters out DNF/DNS rows
-  - Selector: `table#list.ui-jqgrid-btable`
+## Privacy and license
 
-- **Traditional HTML Tables** (Legacy support)
-  - Parses `<thead>` to identify column positions
-  - Matches column headers flexibly (e.g., "Time", "Finish Time", "Gun Time")
-  - Selectors: `.ultra-table`, `[id*="result"]`, `[class*="result"]`
+See [PRIVACY_POLICY.md](PRIVACY_POLICY.md). This extension reads public page
+content locally to provide its visible feature; it does not send that content
+to the developer.
 
-Both methods extract:
-- Runner name, age, gender
-- Finish time (HH:MM:SS format)
-- Rank and place
-- City/state
-- Race distance
-
-## Testing & Debugging
-
-### Standalone Test Page
-
-Open `test.html` in your browser to test the extension functions without installing it:
-
-1. Open `test.html` in any browser
-2. Click "Load Sample Data" to populate with test data
-3. Use the interactive controls to test:
-   - Time conversion functions
-   - Histogram generation with different bin sizes
-   - Distance filtering
-   - Edge cases and error handling
-4. Export test data as JSON for further analysis
-
-### Automated Tests
-
-Run the Jest test suite to verify all functions:
-
-```bash
-cd tests
-npm install
-npm test
-```
-
-Available test commands:
-- `npm test` - Run all tests once
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Generate coverage report
-
-Test files:
-- `time-conversion.test.js` - Tests time parsing and formatting
-- `histogram.test.js` - Tests histogram generation
-- `data-filtering.test.js` - Tests distance filtering
-
-### Debug Mode
-
-Enable debug mode to see detailed information about data fetching and processing:
-
-**Enable via Console:**
-1. Open browser console (F12) on any UltraSignup results page
-2. Run: `UltraSignupDebug.enable()`
-3. Reload the page
-4. A debug panel will appear above the chart
-
-**Debug Panel Features:**
-- Data source (API or HTML scraping)
-- Data statistics (total/filtered results)
-- Performance timings
-- Sample data inspection
-- Error messages
-- Export debug data as JSON
-
-**Console Commands:**
-- `UltraSignupDebug.enable()` - Enable debug mode
-- `UltraSignupDebug.disable()` - Disable debug mode
-- `UltraSignupDebug.toggle()` - Toggle debug mode
-- `UltraSignupDebug.status()` - Check if debug mode is enabled
-
-## Troubleshooting
-
-### Chart doesn't appear
-
-**Check the browser console:**
-1. Right-click on the page → "Inspect" → "Console" tab
-2. Look for messages starting with "UltraSignup Visualizer:"
-3. Enable debug mode: `UltraSignupDebug.enable()` and reload
-4. Common issues:
-   - "No race ID found in URL" - Make sure you're on a `results_event.aspx` page
-   - API errors - Extension now falls back to HTML scraping automatically
-   - No table data - The race may not have results yet
-
-### Chart shows wrong data
-
-- If the race has multiple distances, make sure you're on the correct tab
-- The extension filters by the active tab (e.g., "100 Miler", "50K")
-- Enable debug mode to see filtered vs. total result counts
-
-### Extension not loading
-
-1. Go to `chrome://extensions/`
-2. Check if "UltraSignup Race Visualizer" is enabled
-3. Try clicking the refresh icon on the extension card
-4. If errors appear, check that all files are in the folder
-5. Check console for error messages
-
-### Data Fetching Issues
-
-The extension now uses a fallback strategy:
-1. **First attempt**: Try multiple API endpoints
-2. **Fallback**: Scrape data from HTML table
-3. **Result**: You'll see which method worked in the console
-
-Enable debug mode to see:
-- Which API endpoints were tried
-- Whether HTML scraping was used
-- Sample of the data that was collected
-
-## Future Enhancements
-
-Ideas for version 2.0:
-- ✨ Multiple chart types (box plot, scatter plot)
-- 🔄 Tab switching detection (auto-update chart when switching distances)
-- 🎨 Gender-based coloring
-- 📈 Pace vs. age scatter plots
-- ⚙️ Customizable bin sizes
-- 💾 Export chart as image
-- 🌙 Dark mode support
-
-## Browser Compatibility
-
-- ✅ **Chrome** - Fully supported
-- ✅ **Edge** - Should work (Chromium-based)
-- ❌ **Firefox** - Not yet (requires Manifest V2 version)
-- ❌ **Safari** - Not yet (different extension format)
-
-## Privacy & Permissions
-
-This extension:
-- ✅ Only runs on ultrasignup.com
-- ✅ Only accesses publicly available race data
-- ✅ Does not collect or store any personal information
-- ✅ Does not track your browsing
-- ✅ All processing happens locally in your browser
-
-## Contributing
-
-Found a bug or have a feature idea? This is a learning project, so feel free to:
-- Test it on different races
-- Suggest improvements
-- Report issues
-
-## License
-
-Free to use and modify for personal use.
-
-## Acknowledgments
-
-- **UltraSignup** - For providing the race data API
-- **Chart.js** - For the excellent charting library
-- **The ultrarunning community** - For making data-driven racing fun! 🏃‍♂️🏃‍♀️
-
+MIT licensed. Bundled Chart.js notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

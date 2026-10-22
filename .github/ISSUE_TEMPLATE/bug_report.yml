@@ -1,0 +1,23 @@
+name: Report a bug
+description: Help fix an incorrect chart or a page that does not work.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Extension and Chrome versions
+    validations:
+      required: true
+  - type: input
+    id: race
+    attributes:
+      label: Public race results URL
+      description: Include the age and division filters selected, if any.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened, and what did you expect?
+      description: Include steps to reproduce. Screenshots are optional; share only information you want public.
+    validations:
+      required: true
