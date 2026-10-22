@@ -1,50 +1,53 @@
-# Privacy Policy for UltraSignup Race Visualizer
+# Privacy policy — UltraSignup Race Visualizer
 
-**Last updated: February 4, 2026**
+Last updated: October 21, 2026. Applies to versions 1.0.1 and 1.0.2.
 
-## Data Collection
+## What the extension reads
 
-This extension does NOT collect, store, or transmit any personal data.
+When you open an UltraSignup desktop race-results page, the extension reads the
+results already rendered on that page: runner names, finish times, places, ages,
+and divisions, plus the selected distance and age/division filters. These may
+include information about the browser user if they participated in the race.
 
-## Data Usage
+It uses that information only to draw a finish-time histogram and compare a
+runner you select with the finishers in the loaded group. DNF, DNS, DQ,
+unofficial results, and invalid or zero finish times are excluded.
 
-- Reads publicly available race data from ultrasignup.com
-- All processing happens locally in your browser
-- No data is sent to external servers
-- No analytics or tracking of any kind
+## Processing, storage, and sharing
 
-## Permissions Explained
+All extension processing happens locally in the browser. The extension makes
+no network requests, does not access authentication cookies, and does not send
+race data, runner selections, or browsing activity to the developer or any third
+party. UltraSignup continues to load its own page and results as usual.
 
-- **"storage"**: Used only to remember your debug mode preference (on/off). No personal data is stored.
-- **"ultrasignup.com"**: Required to read race results from the page you are viewing. The extension only activates on UltraSignup race results pages.
+The extension keeps the current chart and runner selection in page memory. It
+does not persist them in browser storage. Reloading or closing the page clears
+the selection. There are no accounts, analytics, advertising, tracking, or
+remote model services. Chart.js is bundled with the extension.
 
-## What the Extension Does
+The extension's use of information complies with the Chrome Web Store User Data
+Policy, including its Limited Use requirements. Information is used solely for
+the visible race-results visualization and comparison feature.
 
-1. Detects when you visit a UltraSignup race results page
-2. Reads the publicly displayed race data (finish times, distances)
-3. Generates a histogram chart showing finish time distribution
-4. Displays the chart on the page for your viewing
+## Page access
 
-All of this happens entirely within your browser. No data leaves your device.
+The extension activates only on `https://ultrasignup.com/results_event.aspx`
+pages. It requests no additional Chrome API permissions, broad host permission,
+or storage permission. Its declared content script can read and augment the
+matched results page so it can display the chart.
 
-## Third Parties
+## Voluntary feedback
 
-This extension does not share any data with third parties. The only external resource used is the Chart.js library, which is bundled locally with the extension and does not make any network requests.
+The feedback link opens GitHub Issues. Opening the link does not automatically
+attach a race URL, runner information, or diagnostics. Information you choose to
+submit is handled by GitHub under its policies and may be public. Include only
+information you want to share. Feedback requires a GitHub account.
 
-## Children's Privacy
+## Contact and updates
 
-This extension does not collect any data from anyone, including children.
+Questions or requests: https://github.com/michaelpawlus/ultrasignup-viz-extension/issues
 
-## Changes to This Policy
+Source and policy updates: https://github.com/michaelpawlus/ultrasignup-viz-extension
 
-If this privacy policy changes, the updated policy will be posted in this repository and the "Last updated" date will be revised.
-
-## Contact
-
-For questions about this privacy policy or the extension:
-- GitHub Issues: https://github.com/michaelpawlus/ultrasignup-viz-extension/issues
-
-## Open Source
-
-This extension is open source. You can review all code at:
-https://github.com/michaelpawlus/ultrasignup-viz-extension
+This is an independent community extension, not affiliated with or endorsed by
+UltraSignup. Policy changes will be published here with an updated date.

@@ -7,7 +7,11 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
-  "keywords": ["testing", "jest", "ultrasignup"],
+  "keywords": [
+    "testing",
+    "jest",
+    "ultrasignup"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -20,10 +24,15 @@
       "**/*.test.js"
     ],
     "collectCoverageFrom": [
-      "../test-lib.js"
+      "../core.js",
+      "../scraper.js",
+      "../content.js"
     ],
     "coverageDirectory": "./coverage",
-    "verbose": true
+    "verbose": true,
+    "testEnvironmentOptions": {
+      "url": "https://ultrasignup.com/results_event.aspx?did=125818",
+      "runScripts": "outside-only"
+    }
   }
 }
-

@@ -1,19 +1,22 @@
 {
   "manifest_version": 3,
   "name": "UltraSignup Race Visualizer",
-  "version": "1.0.0",
-  "description": "Adds visual charts to UltraSignup race results pages to show finish time distributions",
-  "permissions": [
-    "storage"
-  ],
-  "host_permissions": [
-    "https://ultrasignup.com/*"
-  ],
+  "version": "1.0.2",
+  "description": "See how a runner’s finish time compares with the field on UltraSignup, with a histogram that follows age and division filters.",
   "content_scripts": [
     {
-      "matches": ["https://ultrasignup.com/results_event.aspx*"],
-      "js": ["chart.min.js", "debugPanel.js", "content.js"],
-      "css": ["styles.css"],
+      "matches": [
+        "https://ultrasignup.com/results_event.aspx*"
+      ],
+      "js": [
+        "chart.min.js",
+        "core.js",
+        "scraper.js",
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -23,4 +26,3 @@
     "128": "icons/icon128.png"
   }
 }
-

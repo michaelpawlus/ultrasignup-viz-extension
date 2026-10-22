@@ -1,0 +1,17 @@
+name: Verify extension
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+      - run: npm --prefix tests ci
+      - run: npm --prefix tests test -- --runInBand
+      - run: node scripts/release.mjs --json
