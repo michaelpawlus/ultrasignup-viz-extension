@@ -44,3 +44,7 @@ build/
 .env
 .env.local
 
+
+# Local verification artifacts
+.verification/
+tests/coverage/

@@ -79,7 +79,7 @@ describe('createHistogramData', () => {
     
     result.labels.forEach(label => {
       // Should match format "HH:MM-HH:MM"
-      expect(label).toMatch(/^\d+:\d{2}-\d+:\d{2}$/);
+      expect(label).toMatch(/^\d+:\d{2}–\d+:\d{2}$/);
     });
   });
   

@@ -37,18 +37,18 @@ describe('filterByDistance', () => {
     expect(result.length).toBe(sampleData.length);
   });
   
-  test('returns original data when no matches found', () => {
+  test('returns no data when no matches found', () => {
     const result = filterByDistance(sampleData, 'NonExistent Race');
     
-    // Should return all data as fallback
-    expect(result.length).toBe(sampleData.length);
+    // Never silently mix race distances.
+    expect(result).toEqual([]);
   });
   
   test('handles case sensitivity', () => {
     const result = filterByDistance(sampleData, '100 mile');
     
     // Should still find matches (case insensitive contains check)
-    expect(result.length).toBeGreaterThan(0);
+    expect(result).toEqual(sampleData.filter(r => r.Race === '100 Mile'));
   });
   
   test('handles empty data array', () => {
